@@ -1,0 +1,12 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "Food Credit API Service",
+  "main": "index.js",
+  "scripts": {
+    "dev": "echo \"Error: no dev specified\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "RacRot",
+  "license": "MIT"
+}
