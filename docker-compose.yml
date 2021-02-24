@@ -1,0 +1,33 @@
+version: '3.1'
+
+services:
+  db:
+    image: mongo:4.2.0
+    ports:
+      - "27017:27017"
+
+  api:
+    build: ./api
+    command: npm run dev
+    environment:
+      NODE_ENV: "development"
+      FRONTEND_URL: "http://frontend:5000"
+    volumes:
+      - ./api:/code:delegated
+      - /code/node_modules/
+    ports:
+      - "5001:5001"
+    links:
+      - db
+  
+  frontend:
+    build: ./frontend
+    command: npm run dev
+    environment:
+      TARGET_ENV: "development"
+      API_URL: "http://api:5001"
+    volumes:
+      - ./frontend:/code:delegated
+      - /code/node_modules/
+    ports:
+      - "5000:5000"
