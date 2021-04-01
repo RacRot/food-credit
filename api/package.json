@@ -4,7 +4,7 @@
   "description": "Food Credit API Service",
   "main": "index.js",
   "scripts": {
-    "dev": "echo \"Error: no dev specified\"",
+    "dev": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "RacRot",
