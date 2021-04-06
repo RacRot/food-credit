@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
 const CreditsSchema = new mongoose.Schema({
-    id: Number,
     food: String,
     quantity: Number,
     quantityType: String,
