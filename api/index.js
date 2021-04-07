@@ -14,5 +14,6 @@ server.listen(
 )
 
 server.post('/registerNewUser', async (req, res) => { userfunctions.RegisterNewUser(req, res); });
+server.post('/login', async (req, res) => { userfunctions.Login(req, res); });
 
 connection().then(() => { console.log('***** MONGODB connected'); });
