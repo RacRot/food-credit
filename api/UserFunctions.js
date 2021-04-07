@@ -1,6 +1,7 @@
 const User = require('./User.model');
+const bcrypt = require('bcrypt');
 
-function RegisterNewUserController(req, res) {
+async function RegisterNewUserController(req, res) {
     const email = req.body.email;
     const password = req.body.password;
     const username = req.body.username;
@@ -13,8 +14,12 @@ function RegisterNewUserController(req, res) {
 
     //TODO: check input values
     
+    //generate hash for password
+    const salt = await bcrypt.genSalt(10);
+    const pswHash = await bcrypt.hash(password, salt);
 
-    new User( {email: email, passwordHash: "notarealpasswordhash:)", username: username} ).save(
+    //generate and save user
+    new User( {email: email, passwordHash: pswHash, username: username} ).save(
         (err, newUser) => {
             if (err) {
                 const msg = err.message;
@@ -30,6 +35,8 @@ function RegisterNewUserController(req, res) {
                 
                 res.status(401).json(errorMsg).send();
             } else {
+                
+
                 console.log(`${newUser.username} inserted successfully!`);
                 res.status(200).send();
             }
