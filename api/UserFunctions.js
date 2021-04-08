@@ -1,6 +1,55 @@
 const User = require('./User.model');
 const bcrypt = require('bcrypt');
 
+function checkEmail(email) {
+    if (!email || email === '')
+        return 'Email empty or null';
+
+    //RFC 5322 Official Standard
+    const emailRX = /^(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])$/;
+    if (!emailRX.test(email))
+        return 'Email format not valid';
+    
+    //no error detected
+    return '';
+}
+
+function checkPassword(psw) {
+    if (!psw || psw === '')
+        return 'Password empty or null';
+
+    if (psw.length < 8 || psw.length > 72)
+        return 'Password must be between 8 and 72 characters long';
+    
+    const uppercaseRX = /[A-Z]/;
+    const lowercaseRX = /[a-z]/;
+    const numberRX = /[0-9]/;
+    const symbolsRX = /[-\*\+!#$%\^&\(\)\[\]\{\}\\\.\/,<>\?: ]/;
+
+    const allRXs = [uppercaseRX, lowercaseRX, numberRX, symbolsRX];
+    for (const rx of allRXs)
+        if (!rx.test(psw))
+            return 'Passowrd must contain an uppercase, a lowercase, a number and a symbol';
+    
+    //no error detected
+    return '';
+}
+
+function checkUsername(username) {
+    if (!username || username === '')
+        return 'Username empty or null';
+
+    if (username.length < 4 || username.length > 20)
+        return 'Username must be between 4 and 20 characters long';
+
+    const userRX = /^[A-Za-z0-9_-]{4,20}$/;
+    if (!userRX.test(username))
+        return 'Username format not valid';
+    
+    //no error detected
+    return '';
+}
+
 async function LoginController(req, res) {
     const email = req.body.email;
     const username = req.body.username;
@@ -13,9 +62,31 @@ async function LoginController(req, res) {
         return;
     }
 
-    //TODO: check input values
-
-    //check if username/email are valid
+    //check syntax of parameters    
+    let err;
+    if (email) {
+        err = checkEmail(email);
+        if (err) {
+            console.error('Invalid email format');
+            res.status(400).json(err).send();
+            return;
+        }
+    } else if (username) {
+        err = checkUsername(username);
+        if (err) {
+            console.error('Invalid username format');
+            res.status(400).json(err).send();
+            return;
+        }
+    }
+    err = checkPassword(password);
+    if (err) {
+        console.error('Invalid password');
+        res.status(400).json(err).send();
+        return;
+    }
+            
+    //check if username/email are present
     let user;
     if (username)
         user = await User.findOne( {username: username} );
@@ -23,7 +94,7 @@ async function LoginController(req, res) {
         user = await User.findOne( {email: email} );
 
     if (user) {
-        //check if password is correct
+        //check if password matches the hash saved
         bcrypt.compare(
             password,
             user.passwordHash,
@@ -54,7 +125,26 @@ async function RegisterNewUserController(req, res) {
         return;
     }
 
-    //TODO: check input values
+    //check syntax of parameters    
+    let err;
+    err = checkEmail(email);
+    if (err) {
+        console.error('Invalid email format');
+        res.status(400).json(err).send();
+        return;
+    }
+    err = checkUsername(username);
+    if (err) {
+        console.error('Invalid username format');
+        res.status(400).json(err).send();
+        return;
+    }
+    err = checkPassword(password);
+    if (err) {
+        console.error('Invalid password');
+        res.status(400).json(err).send();
+        return;
+    }
     
     //generate hash for password
     const salt = await bcrypt.genSalt(10);
