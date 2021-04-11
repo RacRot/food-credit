@@ -1,6 +1,6 @@
-const express = require('express');
-const connection = require('./dbconnection');
-const userfunctions = require('./UserFunctions');
+import express from 'express';
+import connection from './dbconnection';
+import { RegisterNewUserController, LoginController } from './UserFunctions';
 
 const APIport = process.env.API_PORT || 5001;
 
@@ -13,7 +13,7 @@ server.listen(
     () => { console.log(`***** API listening on port ===> ${APIport}`); }
 )
 
-server.post('/registerNewUser', async (req, res) => { userfunctions.RegisterNewUser(req, res); });
-server.post('/login', async (req, res) => { userfunctions.Login(req, res); });
+server.post('/registerNewUser', async (req, res) => { RegisterNewUserController(req, res); });
+server.post('/login', async (req, res) => { LoginController(req, res); });
 
 connection().then(() => { console.log('***** MONGODB connected'); });
