@@ -1,7 +1,8 @@
-import User from './User.model';
 import bcrypt from 'bcrypt';
+import { Request, Response } from 'express';
+import User, { IUser } from './User.model';
 
-function checkEmail(email) {
+function checkEmail(email: string) {
     if (!email || email === '')
         return 'Email empty or null';
 
@@ -14,7 +15,7 @@ function checkEmail(email) {
     return '';
 }
 
-function checkPassword(psw) {
+function checkPassword(psw: string) {
     if (!psw || psw === '')
         return 'Password empty or null';
 
@@ -35,7 +36,7 @@ function checkPassword(psw) {
     return '';
 }
 
-function checkUsername(username) {
+function checkUsername(username: string) {
     if (!username || username === '')
         return 'Username empty or null';
 
@@ -50,7 +51,7 @@ function checkUsername(username) {
     return '';
 }
 
-export async function LoginController(req, res) {
+export async function LoginController(req: Request, res: Response) {
     const email = req.body.email;
     const username = req.body.username;
     const password = req.body.password;
@@ -87,14 +88,16 @@ export async function LoginController(req, res) {
     }
             
     //check if username/email are present
-    let user;
+    let user: IUser;
     if (username)
         user = await User.findOne( {username: username} );
     else if (email)
         user = await User.findOne( {email: email} );
+    else throw new Error('Missing field to identify user');
 
     if (user) {
         //check if password matches the hash saved
+        if (!user.passwordHash) throw new Error('')
         bcrypt.compare(
             password,
             user.passwordHash,
@@ -114,7 +117,7 @@ export async function LoginController(req, res) {
     }
 }
 
-export async function RegisterNewUserController(req, res) {
+export async function RegisterNewUserController(req: Request, res: Response) {
     const email = req.body.email;
     const password = req.body.password;
     const username = req.body.username;
@@ -151,25 +154,22 @@ export async function RegisterNewUserController(req, res) {
     const pswHash = await bcrypt.hash(password, salt);
 
     //generate and save user
-    new User( {email: email, passwordHash: pswHash, username: username} ).save(
-        (err, newUser) => {
-            if (err) {
-                const msg = err.message;
-                console.error(`user not inserted, some error occurred: ${msg}`);
-                
-                let errorMsg;
-                if (msg.includes('email'))
-                    errorMsg = 'Email already present';
-                else if (msg.includes('username'))
-                    errorMsg = 'Username already present';
-                else
-                    errorMsg = 'Other error';
-                
-                res.status(401).json(errorMsg).send();
-            } else {
-                console.log(`${newUser.username} inserted successfully`);
-                res.status(200).send();
-            }
-        }
-    );
+    try {
+        const newUser = await new User( {email: email, passwordHash: pswHash, username: username} ).save();
+        console.log(`${newUser.username} inserted successfully`);
+        res.status(200).send();
+    } catch (err) {
+        const msg = err.message;
+        console.error(`user not inserted, some error occurred: ${msg}`);
+        
+        let errorMsg;
+        if (msg.includes('email'))
+            errorMsg = 'Email already present';
+        else if (msg.includes('username'))
+            errorMsg = 'Username already present';
+        else
+            errorMsg = 'Other error';
+        
+        res.status(401).json(errorMsg).send();
+    }
 }
