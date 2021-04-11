@@ -6,30 +6,22 @@ services:
     ports:
       - "27017:27017"
 
-  mongo-express:
-    image: mongo-express
-    environment:
-      ME_CONFIG_MONGODB_SERVER: "db"
-      ME_CONFIG_MONGODB_PORT: 27017
-    depends_on:
-      - db
-    ports:
-      - "8081:8081"
-
   api:
     build: ./api
     command: npm run dev
     environment:
       NODE_ENV: "development"
+      ME_CONFIG_MONGODB_SERVER: "db"
+      ME_CONFIG_MONGODB_PORT: 27017
       FRONTEND_URL: "http://frontend:5000"
     volumes:
       - ./api:/code:delegated
       - /code/node_modules/
-    ports:
-      - "5001:5001"
-    links:
+    depends_on:
       - db
-  
+    ports:
+      - "8081:8081"
+
   frontend:
     build: ./frontend
     command: npm start #run dev
