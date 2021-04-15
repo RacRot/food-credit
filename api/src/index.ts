@@ -13,7 +13,9 @@ server.listen(
     () => { console.log(`***** API listening on port ===> ${APIport}`); }
 )
 
-server.post('/registerNewUser', async (req, res) => { RegisterNewUserController(req, res); });
-server.post('/login', async (req, res) => { LoginController(req, res); });
+server.post('/registerNewUser', RegisterNewUserController);
+server.post('/login', LoginController);
+
+server.get('/health', async (req, res) => res.end('OK'));
 
 connection().then(() => { console.log('***** MONGODB connected'); });
