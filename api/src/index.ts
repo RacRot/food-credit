@@ -1,21 +1,12 @@
-import express from 'express';
-import connection from './dbconnection';
-import { RegisterNewUserController, LoginController } from './UserFunctions';
+import server from './server';
 
-const APIport = process.env.API_PORT || 5001;
+import connect from './utils/database/connect';
 
-const server = express();
-server.use(express.json());
-server.use(express.urlencoded( {extended: true} ));
+const app = async () => {
+  await connect();
+  console.log('==========\nDATABASE CONNECTED\n==========')
+  const port = process.env.API_PORT || '5001';
+  server.listen(port, () => console.log(`==========\nSERVER LISTENING (PORT: ${port})\n==========`));
+};
 
-server.listen(
-    APIport,
-    () => { console.log(`***** API listening on port ===> ${APIport}`); }
-)
-
-server.post('/registerNewUser', RegisterNewUserController);
-server.post('/login', LoginController);
-
-server.get('/health', async (req, res) => res.end('OK'));
-
-connection().then(() => { console.log('***** MONGODB connected'); });
+app();
