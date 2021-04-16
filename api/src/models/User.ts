@@ -22,6 +22,13 @@ const UserSchema = new mongoose.Schema({
     //  brokies: []
     //  status
 });
+
+export type IUser = {
+    passwordHash?: string;
+    email?: string;
+    username?: string;
+}
+
 const User = mongoose.model('User', UserSchema);
 
-module.exports = User;
+export default User;
