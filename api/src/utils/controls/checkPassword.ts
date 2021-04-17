@@ -8,7 +8,7 @@ function checkPassword(psw: string) {
   const uppercaseRX = /[A-Z]/;
   const lowercaseRX = /[a-z]/;
   const numberRX = /[0-9]/;
-  const symbolsRX = /[-\*\+!#$%\^&\(\)\[\]\{\}\\\.\/,<>\?: ]/;
+  const symbolsRX = /[-\*\+!#$%\^&\(\)\[\]\{\}\\\.\/,<>\?:_ ]/;
 
   const allRXs = [uppercaseRX, lowercaseRX, numberRX, symbolsRX];
   for (const rx of allRXs)
