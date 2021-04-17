@@ -34,6 +34,10 @@ module.exports = {
   devServer: {
     port: 5000,
     watchContentBase: true,
+    watchOptions: {
+      aggregateTimeout: 500, // delay before reloading
+      poll: 1000 // enable polling since fsevents are not supported in docker
+    }
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
