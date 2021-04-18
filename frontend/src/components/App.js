@@ -1,17 +1,29 @@
 import React, { useEffect } from 'react';
-import styled from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
 
-const Title = styled.h1`
-  font-size: 1.5em;
-  text-align: center;
-  color: palevioletred;
+import Navbar from './Navbar';
+import BackgroundImage from '../assets/background_landing.jpg';
+
+const GlobalStyle = createGlobalStyle`
+  html, body {
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    height: 100%;
+    width: 100%;
+  }
 `;
 
-const Wrapper = styled.section`
-  padding: 4em;
-  background: papayawhip;
+const MainSection = styled.section`
+  background-image: url(${BackgroundImage});
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 100vh;
+  width: 100%;
+  max-width: 100%;
 `;
-
 
 const App = () => {
   useEffect(() => {
@@ -19,11 +31,13 @@ const App = () => {
     fetch('http://localhost:5001/health')
       .then(response => response.json())
       .then(data => console.log('The Server said: ', data));
-  })
+  });
   return(
-    <Wrapper>
-      <Title> Hello, World! </Title>
-    </Wrapper>
+    <>
+      <GlobalStyle />
+      <Navbar />
+      <MainSection />
+    </>
   );
 };
 
