@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 
 import Navbar from './Navbar.js';
-import MainSection from './MainSection.js';
+import LandingPage from './LandingPage.js';
 import GlobalStyle from './GlobalStyle.js';
 
 const App = () => {
@@ -15,9 +15,9 @@ const App = () => {
     <>
       <GlobalStyle />
       <Navbar />
-      <MainSection />
+      <LandingPage />
     </>
-  );
+  )
 };
 
 export default App;
