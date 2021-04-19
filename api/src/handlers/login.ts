@@ -21,7 +21,7 @@ async function login(req: Request, res: Response) {
   }
 
   //check syntax of parameters    
-  let err;
+  let err: string;
   if (email) {
     err = checkEmail(email);
     if (checkEmptyErr(err, 'Invalid email format', err, res))

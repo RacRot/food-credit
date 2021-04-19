@@ -24,7 +24,7 @@ async function register(req: Request, res: Response) {
     return;
 
   //check syntax of parameters    
-  let err;
+  let err: string;
   err = checkEmail(email);
   if (checkEmptyErr(err, 'Invalid email format', err, res))
     return;
@@ -36,8 +36,8 @@ async function register(req: Request, res: Response) {
     return;
 
   //generate hash for password
-  const salt = await bcrypt.genSalt(10);
-  const pswHash = await bcrypt.hash(password, salt);
+  const salt: string | number = await bcrypt.genSalt(10);
+  const pswHash: string = await bcrypt.hash(password, salt);
 
   //generate and save user
   try {
@@ -45,10 +45,10 @@ async function register(req: Request, res: Response) {
     console.log(`${newUser.username} inserted successfully`);
     res.status(200).send();
   } catch (err) {
-    const msg = err.message;
+    const msg: string = err.message;
     console.error(`user not inserted, some error occurred: ${msg}`);
 
-    let errorMsg;
+    let errorMsg: string;
     if (msg.includes('email'))
       errorMsg = 'Email already present';
     else if (msg.includes('username'))
