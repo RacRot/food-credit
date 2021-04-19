@@ -5,6 +5,7 @@ const UserSchema = new mongoose.Schema({
         type: String,
         unique: true,
         required: true,
+        trim: true,
     },
     passwordHash: {
         type: String,
@@ -14,6 +15,9 @@ const UserSchema = new mongoose.Schema({
         type: String,
         unique: true,
         required: true,
+        minLength: 4,
+        maxLength: 20,
+        trim: true
     },
     //...configs
     //  tags: []

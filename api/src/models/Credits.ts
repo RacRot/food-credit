@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { IUser } from './User';
 
 const CreditsSchema = new mongoose.Schema({
     food: {
@@ -9,16 +8,19 @@ const CreditsSchema = new mongoose.Schema({
     quantity: {
         type: Number,
         required: true,
+        min: 1,
     },
     quantityType: String,
     //terms
     creditor: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
+        ref: 'User',
     },
     debtor: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
+        ref: 'User',
     },
     createdAt: {
         type: Date,
@@ -32,6 +34,7 @@ const CreditsSchema = new mongoose.Schema({
 export type ICredit = {
     food: string,
     quantity: number,
+    quantityType?: string,
     creditor: string,   //username, not the entire structure
     debtor: string,     //username, not the entire structure
     createdAt: Date,
