@@ -6,11 +6,12 @@ import User, { IUser } from '../models/User';
 import checkEmail from '../utils/controls/checkEmail';
 import checkPassword from '../utils/controls/checkPassword';
 import checkUsername from '../utils/controls/checkUsername';
+import { checkEmptyErr, checkEmptyField } from '../utils/controls/generic';
 
 async function login(req: Request, res: Response) {
-  const email = req.body.email;
-  const username = req.body.username;
-  const password = req.body.password;
+  const email: string = req.body.email;
+  const username: string = req.body.username;
+  const password: string = req.body.password;
 
   //at least one between username and email
   if ((!username && !email) || !password) {
@@ -23,25 +24,16 @@ async function login(req: Request, res: Response) {
   let err;
   if (email) {
     err = checkEmail(email);
-    if (err) {
-      console.error('Invalid email format');
-      res.status(400).json(err).send();
+    if (checkEmptyErr(err, 'Invalid email format', err, res))
       return;
-    }
   } else if (username) {
     err = checkUsername(username);
-    if (err) {
-      console.error('Invalid username format');
-      res.status(400).json(err).send();
+    if (checkEmptyErr(err, 'Invalid username format', err, res))
       return;
-    }
   }
   err = checkPassword(password);
-  if (err) {
-    console.error('Invalid password');
-    res.status(400).json(err).send();
-    return;
-  }
+  if (checkEmptyErr(err, 'Invalid password', err, res))
+      return;
 
   //check if username/email are present
   let user: IUser;
@@ -53,7 +45,7 @@ async function login(req: Request, res: Response) {
 
   if (user) {
     //check if password matches the hash saved
-    if (!user.passwordHash) throw new Error('')
+    if (!user.passwordHash) throw new Error('Missing field in user structure');
     bcrypt.compare(
       password,
       user.passwordHash,
