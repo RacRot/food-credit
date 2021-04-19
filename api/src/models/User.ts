@@ -27,7 +27,7 @@ export type IUser = {
     passwordHash?: string;
     email?: string;
     username?: string;
-}
+};
 
 const User = mongoose.model('User', UserSchema);
 
