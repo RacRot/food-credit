@@ -15,9 +15,9 @@ const connect = async () => {
     }
   );
   // NOTE: Load models to register them
-  const normalizedPath = path.join(__dirname, "../../models");
+  const normalizedPath = path.join(__dirname, '../../models');
   fs.readdirSync(normalizedPath)
-    .forEach(function(model) {
+    .forEach(model => {
       require('../../models/' + model);
     });
 };
