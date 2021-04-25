@@ -35,7 +35,7 @@ async function newCredit(req: Request, res: Response) {
   } catch (err) {
     const msg: string = err.message;
     console.error(`credit not inserted, some error occurred: ${msg}`);
-    res.status(401).json(`Some error occurred: ${msg}`);
+    res.status(500).json(`Some error occurred: ${msg}`);
   }
 }
 
