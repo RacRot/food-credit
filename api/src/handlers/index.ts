@@ -14,7 +14,7 @@ router.use(express.urlencoded( {extended: true} ));
 
 router.post('/register', register);
 router.post('/login', login);
-router.post('/newCredit', newCredit);
+router.post('/new-credit', newCredit);
 
 router.get('/health', health);
 
